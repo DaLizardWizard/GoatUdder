@@ -1,0 +1,154 @@
+import math
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from pydicom import dcmread
+import matplotlib.image as mpimg
+import cv2
+import skimage
+import shutil
+from skimage import exposure
+from skimage import measure
+from skimage.draw import ellipse
+from skimage.filters import unsharp_mask
+from skimage.io import imread_collection
+from skimage.measure import label, regionprops, regionprops_table
+from skimage.transform import rotate
+import plotly.graph_objects as go
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import mean_squared_error
+from skimage.util import compare_images
+from datetime import datetime
+from numpy import *
+from matplotlib import *
+import PIL
+from PIL import Image
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from tqdm.notebook import tqdm
+import matplotlib.pyplot as plt
+from skimage.color import rgb2gray
+from skimage.filters import try_all_threshold
+from skimage.filters import *
+from skimage.transform import radon
+from skimage.transform import iradon
+import bisect
+from PIL import Image
+from PIL.ExifTags import TAGS
+import pytesseract
+
+images1 = "GoatProject/detect_objects/resources/images/*/*.JPG"
+col = imread_collection(images1)
+
+for idx,im in enumerate(col):
+    strip = im[45:85,250:450]
+    blueim = strip.copy()
+    Centrecord = 0
+    
+    #set darker colours and bright non-blue to 0 
+    maskHigher =  ((blueim[:,:,:] < 200))
+    blueim[maskHigher] = 0
+    maskHigher =  ((blueim[:,:,0] > 220))
+    blueim[maskHigher] = 0
+    maskHigher =  ((blueim[:,:,1] > 220))
+    blueim[maskHigher] = 0
+    blueim = blueim[:,:,2]
+
+    #find the x coords of where the blue happes
+    blueslice = blueim[0:10,:]
+    blueslice = blueslice.mean(axis=0)
+    
+    #flip dat slice
+    reverseblueslice = blueslice[::-1]
+    Lpos,Rpos = np.argmax(blueslice>220),np.argmax(reverseblueslice>220)
+    
+    if ((200-Rpos)-Lpos > 20) & (Lpos > 0):
+        Lcord,Rcord = 250+Lpos,250+(200-Rpos)
+        Centrecord = int((Lpos+(200-Rpos))/2)
+        #print(Rcord)
+        def steps ():
+            fig, (ax1, ax2,ax3) = plt.subplots(1, 3, figsize=(16, 2))
+            #Original and thresholded images
+            ax1.set_title("Search strip")
+            ax1.imshow(im[45:85,250:450])
+            ax2.set_title("Blue Channel")
+            ax2.imshow(blueim,cmap="gray")
+            ax3.set_title("Blue channel intensity")
+            ax3.set_xlabel("Pixel X position")
+            ax3.set_ylabel("Average intensity")
+            ax3.set_xlim(0,200)
+            ax3.plot(blueslice)
+            plt.show()
+        
+        #converting the iamge into a PIL so we can extract exif
+        #turns out no exif
+        
+        #Getting the number as text
+        strip = rgb2gray(strip)
+        NumWin = strip[:40,Centrecord-20:Centrecord+20]
+        threshed = NumWin.copy()
+        thresh = threshold_yen(threshed)
+        uppermask = threshed[:,:] <= thresh
+        threshed[uppermask] = 0
+        lowermask = threshed[:,:] >= thresh
+        threshed[lowermask] = 255
+        threshed = Image.fromarray((threshed * 255).astype(np.uint8))
+        text_from_image = pytesseract.image_to_string(threshed\
+        , config ='--psm 6 --oem 3 -c tessedit_char_whitelist=0123456789')
+        
+        text_from_image = text_from_image.strip()
+        text_from_image = text_from_image.replace('\n',"")
+        
+        #image OCR images
+        def ocrims ():
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 2))
+                #Original and thresholded images
+            ax1.set_title("Number window")
+            ax1.imshow(NumWin,cmap="gray")
+            ax2.set_title("Thresholded number")
+            ax2.imshow(threshed,cmap="gray")
+            plt.show()
+        
+        #if it actuallys detects text
+        if len(text_from_image) > 0:
+            print("Image "+str(idx+1))
+            print("Autodetected Stall "+text_from_image)
+            #print(text_from_image)
+            Rudder = im[100:250,Rcord:Rcord+200]
+            Ludder = im[100:250,Lcord-200:Lcord]
+            
+            if Rudder.shape[1] > 100:
+                fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 2))
+                #Original and thresholded images
+                ax1.set_title("Left Udder")
+                ax1.imshow(Ludder)
+                ax2.set_title("Right Udder")
+                ax2.imshow(Rudder)
+                plt.show()
+            else:
+                fig, (ax1) = plt.subplots(1, 1, figsize=(12, 2))
+                #Original and thresholded images
+                ax1.set_title("Left Udder")
+                ax1.imshow(Ludder)
+                plt.show()
+            ocrims()
+            plt.figure(figsize=(12,8))
+            plt.imshow(im[45:85,:])
+            plt.show()
+             #read csv file into memory, match index to new iamge number then extract ID
+            df = pd.read_csv("GoatProject/WholeList.csv")
+            line = df.loc[df['Photo New'] == (idx+1)]
+            print (line)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        
+    
+        
+    #steps()   
+    
+    #steps() to show window working
+    #ocrims() to show ocr number extraction
+    
+    #plt.show()
+text_from_image

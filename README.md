@@ -1,5 +1,5 @@
 # GoatUdder
-Pipeline that extracts stall number and goat udder sub-images from video frames taken in a milking parlour. 
+Pipeline that extracts stall number and goat udder sub-images from video frames taken in a milking parlour.  
 
 Autodetecting stall number in goat images followed by udder extraction
 

@@ -8,6 +8,7 @@ Two data streams were found that were critical to this preliminary study.
 The first an image folder containing 72 frames from a raw video of the goat milking parlour (an example frame is shown below in Figure 1) containing key information such as stall number and udder appearance.
 
 ![image](https://user-images.githubusercontent.com/75072026/136539551-74e4a401-36dc-450c-ab40-bb00843a0cb3.png)
+
 Figure 1. Frame from goat milking video.
 
 The second was a data table containing metadata about the goats such as udder score, birthdate and image ID, as per below.
@@ -18,17 +19,20 @@ Stall detection
 A slice of the image spanning the width of the image was taken between pixel Y positions of 45:85 to extract the image area which contained the stall number information.(Below, Figure 2)
 
 ![image](https://user-images.githubusercontent.com/75072026/136539596-65f60cb9-5853-41fe-ac54-cd5bf7753527.png) 
+
 Figure 2. Image slice containing key stall information.
 
 From this image, only pixels after pixel X position 250 were used for further image enhancement and optical character recognition (OCR) as shown below (Left, Figure 3). This section was chosen as the stall numbers on the left side were at a distorted angle, attempts to correct this angle distortion were made such as a) rotation b) skewing and c) radon transforms but were all unsuccessful (data not shown). This image segment was then manipulated to enhance the blue area containing stall number by depleting channels containing red or green colours (Centre, Figure 3). Average pixel intensity was then determined across the horizontal image axis (Right, Figure 3). From this average pixel intensity plot, the leftmost position over a pixel intensity of 200 was determined to be the left-most bounds of the stall information panel and like-wise for the right-most bounds. From this, the rough centre of the stall information panel could be calculated.
 
 ![image](https://user-images.githubusercontent.com/75072026/136539615-9328a009-fc5c-4069-bb97-4b450e71fa10.png) 
+
 Figure 3. A sub-slice of the image strip containing stall information was processed and enhanced to extract the left and right bounds of the stall information panel to use as coordinates for further text extraction. The leftmost pixel position above an average intensity of 200 was deemed to be the left bounds, likewise for the right bounds.
 
 Stall number window extraction and processing
 An image slice of a 40x40 pixel box centred between the left and right-most stall coordinates was taken from a greyscale version of the search strip (Left, Figure 4). This 40x40 box was then passed through a Yen threshold filter to produce a binary image required for OCR (Right, Figure 4).
 
 ![image](https://user-images.githubusercontent.com/75072026/136539646-c99c1495-adc5-4302-a264-5f07d7467462.png) 
+
 Figure 4. Extraction of area containing the stall number (Left) and processing into a binary image (Right) required for OCR using a Yen threshold filter.
 
 Automated stall number detection using OCR
@@ -37,6 +41,7 @@ Automated udder image extraction
 If the OCR could determine a character within the stall information window (either correct or incorrect), udders to both the left and the right of the stall were imaged using the centre of the stall information panel as a reference position (Below, Figure 5).
 
 ![image](https://user-images.githubusercontent.com/75072026/136539671-e3a6547c-a270-4ce0-99e6-81727348fece.png) 
+
 Figure 5. Automated extraction of udders based upon stall number reference point.
 
 Results

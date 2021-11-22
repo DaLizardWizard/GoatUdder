@@ -58,6 +58,7 @@ Successful stall processing examples
    
 
 Unsuccessful stall processing examples
+
 ![image](https://user-images.githubusercontent.com/75072026/136539799-8cbeb650-b80e-471f-b224-f40f067a9493.png)
 
 ![image](https://user-images.githubusercontent.com/75072026/136539809-6878ed0e-0522-4d62-a897-5f5b828e6318.png)

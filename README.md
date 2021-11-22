@@ -46,17 +46,24 @@ Figure 5. Automated extraction of udders based upon stall number reference point
 
 Results
 Successful stall processing examples
+
 ![image](https://user-images.githubusercontent.com/75072026/136539722-23bb8661-63f7-492c-9317-d33048d28176.png)
+
 ![image](https://user-images.githubusercontent.com/75072026/136539742-5834ef6d-b45f-4b49-a199-a63d9536c8d8.png)
+
 ![image](https://user-images.githubusercontent.com/75072026/136539750-a4867493-8344-4448-b455-804402f73d0e.png)
+
 ![image](https://user-images.githubusercontent.com/75072026/136539763-dfa7ab98-154d-46fb-88c8-a378d039c994.png)
   
    
 
 Unsuccessful stall processing examples
 ![image](https://user-images.githubusercontent.com/75072026/136539799-8cbeb650-b80e-471f-b224-f40f067a9493.png)
+
 ![image](https://user-images.githubusercontent.com/75072026/136539809-6878ed0e-0522-4d62-a897-5f5b828e6318.png)
+
 ![image](https://user-images.githubusercontent.com/75072026/136539818-347309fb-85e5-43e5-924f-09ecad7884fa.png)
+
 ![image](https://user-images.githubusercontent.com/75072026/136539835-1bae4198-b92a-4213-b164-3e966dda7d9b.png)
    
    
